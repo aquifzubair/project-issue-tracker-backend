@@ -21,7 +21,7 @@ const queryPromise = (query) => {
     return new Promise((resolve, reject) => {
       connection.query(query, (err, results) => {
         if (err) {
-          reject(err.message);
+          reject(err);
         }
         resolve(results);
       });
@@ -45,5 +45,9 @@ const createDatabaseAndTable = () => {
 
 }
 
-module.exports = createDatabaseAndTable;
+module.exports = {
+    connection,
+    createDatabaseAndTable,
+    queryPromise
+};
 
