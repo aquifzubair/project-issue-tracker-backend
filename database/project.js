@@ -15,8 +15,9 @@ const fetchAllProjects = async () => {
 
 const insertIntoProjects = async (data) => {
     try {
+        const query = "INSERT INTO `projects` (project_id,project_name,created_by,created_on,expected_completion_time,description) VALUES (?,?,?,?,?,?)"
         return new Promise((resolve,reject) => {
-            connection.query("INSERT INTO `projects` (project_id,project_name,created_by,created_on,expected_completion_time,description) VALUES (?,?,?,?,?,?)", [uuidv4(), data.name, data.created_by, data.created_on,data.expected_completion_time,data.description], (err, result) => {
+            connection.query(query, [uuidv4(), data.name, data.created_by, data.created_on,data.expected_completion_time,data.description], (err, result) => {
                 if(err) reject(err)
                     resolve(result)
                 });
@@ -44,11 +45,10 @@ const deleteRowFromProjectTable = async (id) => {
 }
 
 const updateRowFromTable = async (id,data) => {
-    console.log(data,'data')
     try{
-        let query = `UPDATE projects SET project_name=${data.name},created_by=${data.created_by}, created_on=${data.created_on}, expected_completion_time=${data.expected_completion_time},description=${data.description} WHERE project_id= ?`
+        let query = `UPDATE projects SET project_name=?,created_by=?, created_on=?, expected_completion_time=?,description=? WHERE project_id= ?`
         return new Promise((resolve,reject) => {
-            connection.query(query, id, (err,result)=> {
+            connection.query(query, [data.name,data.created_by, data.created_on,data.expected_completion_time, data.description,  id], (err,result)=> {
                 err ? reject(err) : resolve(result)
             })
         })

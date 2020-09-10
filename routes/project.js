@@ -33,15 +33,14 @@ routes.delete('/delete/:id', async (req,res) => {
     }
 })
 
-// routes.put('/update/:id', async (res,req) => {    
-//     console.log(req.params.id)
-//     try {
-//         let results = await projectConnection.updateRowFromTable(`${req.params.id}`,req.body );
-//         return res.json(results);
-//     }
-//     catch(err) {
-//         console.error(err)
-//     }
-// })
+routes.put('/update/:id', async (req,res) => {    
+    try {
+        let results = await projectConnection.updateRowFromTable(`${req.params.id}`,req.body );
+        return res.json(results);
+    }
+    catch(err) {
+        console.error(err)
+    }
+})
 
 module.exports = routes;
