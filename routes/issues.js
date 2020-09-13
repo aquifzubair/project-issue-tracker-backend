@@ -14,6 +14,17 @@ routes.get('/', async (req,res,next) => {
     }
 });
 
+routes.get('/:project_id', async (req,res,next) => {
+    try {
+        let results = await projectConnection.fetchIssuesOfProjectId(`"${req.params.project_id}"`);
+        return res.json(results);
+    }
+    catch(err) {
+        console.error(err)
+        next(new Error(`Internal server error, can't get list of issue of this project`))
+    }
+});
+
 routes.post('/insert', async (req,res,next) =>{
     try {
         await projectConnection.insertIntoIssues(req.body);
@@ -27,7 +38,6 @@ routes.post('/insert', async (req,res,next) =>{
 })
 
 routes.delete('/delete/:id', async (req,res,next) => {
-    console.log(req)
     try {
         let results = await projectConnection.deleteRowFromIssuesTable(`${req.params.id}`);
         return res.json(results.affectedRows);
@@ -44,7 +54,6 @@ routes.put('/update/:id', async (req,res,next) => {
     console.log(req.params)
     try {
         let results = await projectConnection.updateRowFromIssuesTable(`${req.params.id}`,req.body );
-        console.log(results,"results")
         return res.json(results);
     }
     catch(err) {

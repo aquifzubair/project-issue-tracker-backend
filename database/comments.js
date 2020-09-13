@@ -13,6 +13,17 @@ const fetchAllComments = async () => {
     }    
 }
 
+const fetchCommentsOfIssueById = async (issue_id) => {
+    try {
+        const query = `SELECT * FROM comments where issue_id=${issue_id};`;
+        const result = await queryPromise(query)
+        return result
+    }
+    catch(err){
+        throw err;
+    }    
+}
+
 const insertIntoComments = async (data) => {
     try {
         const query = "INSERT INTO `comments` (comment_id,comment_message,comment_by,issue_id) VALUES (?,?,?,?)"
@@ -61,5 +72,6 @@ module.exports = {
     fetchAllComments,
     insertIntoComments,
     deleteRowFromCommentsTable,
-    updateRowFromCommentsTable
+    updateRowFromCommentsTable,
+    fetchCommentsOfIssueById
 }

@@ -57,6 +57,8 @@ const updateRowFromTable = async (id,data) => {
         throw err;
     }    
 }
+
+
 module.exports = {
     fetchAllProjects,
     insertIntoProjects,

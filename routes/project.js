@@ -6,7 +6,7 @@ const routes = new Router();
 routes.get('/', async (req,res,next) => {
     try {
         let results = await projectConnection.fetchAllProjects();
-        return res.json(results);
+        return res.send(results);
     }
     catch(err) {
         console.error(err);
