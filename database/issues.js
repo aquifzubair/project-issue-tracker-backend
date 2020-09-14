@@ -1,7 +1,6 @@
 const {queryPromise,connection} = require('./dbConnection');
 const { v4: uuidv4 } = require('uuid');
 
-
 const fetchAllIssues = async () => {
     try {
         const query = 'SELECT * FROM issues;';
@@ -27,7 +26,7 @@ const fetchIssuesOfProjectId = async (project_id) => {
 const insertIntoIssues = async (data) => {
     try {
         const query = "INSERT INTO `issues` (issue_id,issue_summary,issue_description,issue_status, identified_by, assigned_to, issue_date, issue_priority, project_id) VALUES (?,?,?,?,?,?,?,?,?)";
-        const values = [uuidv4(), data.summary, data.description, data.status, data.identified_by, data.assigned_to,data.issue_date, data.issue_priority, data.project_id];
+        const values = [uuidv4(), data.issue_summary, data.issue_description, data.issue_status, data.identified_by, data.assigned_to,data.issue_date, data.issue_priority, data.project_id];
         return new Promise((resolve,reject) => {
             connection.query(query, values, (err, result) => {
                 if(err) reject(err)
@@ -75,7 +74,7 @@ const updateStatusOfAnIssue = async(id,data) => {
     try{
         let query = `UPDATE issues SET issue_status=? WHERE issue_id=?`
         return new Promise((resolve,reject) => {
-            connection.query(query, [data.status, id], (err,result)=> {
+            connection.query(query, [data.issue_status, id], (err,result)=> {
                 err ? reject(err) : resolve(result)
             })
         })
