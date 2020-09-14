@@ -11,8 +11,8 @@ const comments = require('../routes/comments')
 createDatabaseAndTable();
 
 app.use(cors())
-
 app.use(express.json())
+
 
 app.use('/projects',project);
 app.use('/issues',issues);

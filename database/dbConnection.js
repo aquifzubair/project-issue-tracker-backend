@@ -33,7 +33,6 @@ const createDatabaseAndTable = () => {
         queryPromise(databaseQuery.createDb),
         queryPromise(databaseQuery.useDatabase),
         queryPromise(databaseQuery.createProjectTable),
-        // queryPromise(databaseQuery.createUserTable),
         queryPromise(databaseQuery.createIssueTable),
         queryPromise(databaseQuery.createCommentTable),    
     ]

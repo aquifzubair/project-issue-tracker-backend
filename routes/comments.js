@@ -1,7 +1,12 @@
 const {Router} = require('express');
 const projectConnection =require('../database/comments');
 
+const { check, validationResult } = require('express-validator');
+
 const routes = new Router();
+
+const validateEmpty = (name) => check(`${name}`).isLength({ min: 1 }).withMessage(`${name} Can't be empty`);
+
 
 routes.get('/', async (req,res,next) => {
     try {
@@ -25,10 +30,19 @@ routes.get('/:issue_id', async (req,res,next) => {
     }
 });
 
-routes.post('/insert', async (req,res,next) =>{
+routes.post('/insert', [
+    validateEmpty('comment_message'),
+    validateEmpty('comment_by'),
+    validateEmpty('issue_id')
+],async (req,res,next) =>{
+
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+    }
     try {
         await projectConnection.insertIntoComments(req.body);
-        return res.json(req.body);
+        return res.json({message:`Comment is successfully inserted`});
     }
     catch(err) {
         console.error(err)
@@ -39,7 +53,7 @@ routes.post('/insert', async (req,res,next) =>{
 routes.delete('/delete/:id', async (req,res,next) => {
     try {
         let results = await projectConnection.deleteRowFromCommentsTable(`${req.params.id}`);
-        return res.json(results.affectedRows);
+        return res.json({message:`Comment deleted successfully.`});
     }
     catch(err) {
         console.error(err)
@@ -47,10 +61,20 @@ routes.delete('/delete/:id', async (req,res,next) => {
     }
 })
 
-routes.put('/update/:id', async (req,res,next) => {    
+routes.put('/update/:id', [
+    validateEmpty('comment_message'),
+    validateEmpty('comment_by'),
+    validateEmpty('issue_id')
+],async (req,res,next) => {  
+    
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+    }
+    
     try {
         let results = await projectConnection.updateRowFromCommentsTable(`${req.params.id}`,req.body );
-        return res.json(results);
+        return res.json({message:`Comment updated successfully`});
     }
     catch(err) {
         console.error(err)

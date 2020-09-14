@@ -71,11 +71,26 @@ const updateRowFromIssuesTable = async (id,data) => {
     }    
 }
 
+const updateStatusOfAnIssue = async(id,data) => {
+    try{
+        let query = `UPDATE issues SET issue_status=? WHERE issue_id=?`
+        return new Promise((resolve,reject) => {
+            connection.query(query, [data.status, id], (err,result)=> {
+                err ? reject(err) : resolve(result)
+            })
+        })
+    }
+    catch(err){
+        throw err;
+    }
+}
+
 
 module.exports = {
     fetchAllIssues,
     insertIntoIssues,
     deleteRowFromIssuesTable,
     updateRowFromIssuesTable,
-    fetchIssuesOfProjectId
+    fetchIssuesOfProjectId,
+    updateStatusOfAnIssue
 }

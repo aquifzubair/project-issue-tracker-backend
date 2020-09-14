@@ -17,7 +17,7 @@ const insertIntoProjects = async (data) => {
     try {
         const query = "INSERT INTO `projects` (project_id,project_name,created_by,created_on,expected_completion_time,description) VALUES (?,?,?,?,?,?)"
         return new Promise((resolve,reject) => {
-            connection.query(query, [uuidv4(), data.name, data.created_by, data.created_on,data.expected_completion_time,data.description], (err, result) => {
+            connection.query(query, [uuidv4(), data.project_name, data.created_by, data.created_on,data.expected_completion_time,data.description], (err, result) => {
                 if(err) reject(err)
                     resolve(result)
                 });
@@ -48,7 +48,7 @@ const updateRowFromTable = async (id,data) => {
     try{
         let query = `UPDATE projects SET project_name=?,created_by=?, created_on=?, expected_completion_time=?,description=? WHERE project_id= ?`
         return new Promise((resolve,reject) => {
-            connection.query(query, [data.name,data.created_by, data.created_on,data.expected_completion_time, data.description,  id], (err,result)=> {
+            connection.query(query, [data.project_name,data.created_by, data.created_on,data.expected_completion_time, data.description,  id], (err,result)=> {
                 err ? reject(err) : resolve(result)
             })
         })
