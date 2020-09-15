@@ -2,17 +2,20 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
-const { port } = require('../config')
-const { createDatabaseAndTable } = require('../database/dbConnection');
-const project = require('../routes/project')
-const issues = require('../routes/issues')
-const comments = require('../routes/comments')
+const { port } = require('./config')
+const { createDatabaseAndTable } = require('./database/dbConnection');
+const project = require('./routes/project')
+const issues = require('./routes/issues')
+const comments = require('./routes/comments')
 
 createDatabaseAndTable();
 
 app.use(cors())
 app.use(express.json())
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the back-end of project-issue-tracker')
+})
 
 app.use('/projects',project);
 app.use('/issues',issues);
@@ -38,5 +41,5 @@ app.use((err,req,res,next) => {
 })
 
 app.listen(port || 3000, () => {
-  console.log(`Server is listening at http://localhost:${port}`)
+  console.log(`Server is listening at ${port}`)
 })
