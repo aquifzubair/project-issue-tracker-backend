@@ -1,5 +1,6 @@
 const {queryPromise,pool} = require('./dbConnection');
 const { v4: uuidv4 } = require('uuid');
+const logger = require('../logger');
 
 const fetchAllIssues = async () => {
     try {
@@ -8,17 +9,22 @@ const fetchAllIssues = async () => {
         return result
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
 
 const fetchIssuesOfProjectId = async (project_id) => {
     try {
-        const query = `SELECT * FROM issues where project_id=${project_id};`;
-        const result = await queryPromise(query)
-        return result
+        const query = `SELECT * FROM issues where project_id= ?;`;
+        return new Promise((resolve,reject) => {
+            pool.query(query,[project_id], (err,result) => {
+                err ? reject(err) : resolve(result)
+            })
+        })
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
@@ -36,6 +42,7 @@ const insertIntoIssues = async (data) => {
         
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 
@@ -51,6 +58,7 @@ const deleteRowFromIssuesTable = async (id) => {
         })
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
@@ -66,6 +74,7 @@ const updateRowFromIssuesTable = async (id,data) => {
         })
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
@@ -80,6 +89,7 @@ const updateStatusOfAnIssue = async(id,data) => {
         })
     }
     catch(err){
+        logger.error(err);
         throw err;
     }
 }

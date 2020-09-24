@@ -3,7 +3,8 @@ const projectData = require('../data/project.json')
 const { v4: uuidv4 } = require('uuid');
 
 const { host, user, password, database } = require('../config');
-const databaseQuery = require('./creatDatabaseQuery')
+const databaseQuery = require('./creatDatabaseQuery');
+const logger = require('../logger');
 
 let pool = mysql.createPool({
   host: host,
@@ -13,13 +14,13 @@ let pool = mysql.createPool({
 
 
 pool.on('connection', function (connection) {
-  console.log('DB Connection established');
+  logger.info('DB Connection established');
 
   connection.on('error', function (err) {
-    console.error(new Date(), 'MySQL error', err.code);
+    logger.error(new Date(), 'MySQL error', err.code);
   });
   connection.on('close', function (err) {
-    console.error(new Date(), 'MySQL close', err);
+    logger.error(new Date(), 'MySQL close', err);
   });
 
 });
@@ -38,15 +39,16 @@ const loadProjectData = async () => {
 
     if(data.length == 0 || data[0].num_of_rows == 1 ){      
       await queryPromise(InsertData)
-      console.log('data is inserted into project table')
+      logger.info('data is inserted into project table')
     }
 
     else {
-      console.log('Data is Already present in project Table')
+      logger.info('Data is Already present in project Table')
     }
   }
 
   catch(err){
+    logger.error(err)
     throw err;
   }
   
@@ -69,19 +71,19 @@ const  createDatabaseAndTable = async () => {
 
   try{
     await queryPromise(databaseQuery.createDb)
-    console.log('Database created')
+    logger.info('Database created')
   }
   catch(err){
-    console.error(err)
+    logger.error(err)
     throw err;
   }
 
   try{
     await queryPromise(databaseQuery.useDatabase)
-    console.log('Using database')
+    logger.info('Using database')
   }
   catch(err){
-    console.error(err)
+    logger.error(err)
     throw err;
   }
 
@@ -89,10 +91,10 @@ const  createDatabaseAndTable = async () => {
     await queryPromise(databaseQuery.createProjectTable)
     await queryPromise(databaseQuery.createIssueTable)
     await queryPromise(databaseQuery.createCommentTable)
-    console.log('all tables are created')
+    logger.info('all tables are created')
   }
   catch(err){
-    console.error(err)
+    logger.error(err)
     throw err;
   }
 

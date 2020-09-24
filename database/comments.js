@@ -1,5 +1,6 @@
 const {queryPromise,pool} = require('./dbConnection');
 const { v4: uuidv4 } = require('uuid');
+const logger = require('../logger');
 
 
 const fetchAllComments = async () => {
@@ -9,17 +10,24 @@ const fetchAllComments = async () => {
         return result
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
 
 const fetchCommentsOfIssueById = async (issue_id) => {
+    
     try {
-        const query = `SELECT * FROM comments where issue_id=${issue_id};`;
-        const result = await queryPromise(query)
-        return result
+        const query = `SELECT * FROM comments where issue_id= ?;`;
+        return new Promise((resolve, reject) => {
+            pool.query(query,[issue_id], (err , result) => {
+                err ? reject(err) : resolve(result)
+            })
+        })
     }
+
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
@@ -36,6 +44,7 @@ const insertIntoComments = async (data) => {
         
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 
@@ -51,6 +60,7 @@ const deleteRowFromCommentsTable = async (id) => {
         })
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
@@ -65,6 +75,7 @@ const updateRowFromCommentsTable = async (id,data) => {
         })
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }

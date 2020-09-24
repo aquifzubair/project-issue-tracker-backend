@@ -1,5 +1,6 @@
 const {queryPromise,pool} = require('./dbConnection');
 const { v4: uuidv4 } = require('uuid');
+const logger = require('../logger');
 
 
 const fetchAllProjects = async () => {
@@ -9,6 +10,7 @@ const fetchAllProjects = async () => {
         return result
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
@@ -25,9 +27,10 @@ const insertIntoProjects = async (data) => {
         
     }
     catch(err){
+        logger.error(err);
         throw err;
-    }    
-
+    }  
+    
 }
 
 const deleteRowFromProjectTable = async (id) => {
@@ -40,6 +43,7 @@ const deleteRowFromProjectTable = async (id) => {
         })
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }
@@ -54,6 +58,7 @@ const updateRowFromTable = async (id,data) => {
         })
     }
     catch(err){
+        logger.error(err);
         throw err;
     }    
 }

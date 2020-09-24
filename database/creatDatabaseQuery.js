@@ -4,6 +4,7 @@ const createDb = `CREATE DATABASE IF NOT EXISTS ${database};`;
 
 const useDatabase = `USE ${database};`;
 
+
 const createProjectTable = `CREATE TABLE IF NOT EXISTS projects (
     project_id VARCHAR(36) PRIMARY KEY,
     project_name VARCHAR(100),

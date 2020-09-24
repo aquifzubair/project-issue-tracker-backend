@@ -1,8 +1,9 @@
-const {Router} = require('express');
+const {Router, json} = require('express');
 const projectConnection =require('../database/project');
 
 const { check, validationResult } = require('express-validator');
 const routes = new Router();
+const logger = require('../logger');
 
 const validateEmpty = (name) => check(`${name}`).isLength({ min: 1 }).withMessage(`${name} Can't be empty`);
 
@@ -21,10 +22,11 @@ const validateDate = (date) => {
 routes.get('/', async (req,res,next) => {
     try {
         let results = await projectConnection.fetchAllProjects();
-        return res.send(results);
+        logger.info('Project fetched Successfully')
+        return res.status(200).json(results).end();
     }
     catch(err) {
-        console.error(err);
+        logger.error(JSON.stringify(err));
         next(new Error(`Internal server error, can't get list of all projects`))
     }
 });
@@ -42,15 +44,17 @@ routes.post('/insert', [
 
     const errors = validationResult(req)
          if (!errors.isEmpty()) {
+             logger.info(JSON.stringify(errors))
             return res.status(422).json({ errors: errors.array() })
          }
          
     try {
         await projectConnection.insertIntoProjects(req.body);
-        return res.json({message:'Project is added to the database'});
+        logger.info('Project is added to the database')
+        return res.status(200).json({message:'Project is added to the database'}).end();
     }
     catch(err) {
-        console.error(err)
+        logger.error(JSON.stringify(err))
         next(new Error(`Internal server error, can't insert data into project table`))
     }
 })
@@ -58,10 +62,11 @@ routes.post('/insert', [
 routes.delete('/delete/:id', async (req,res,next) => {
     try {
         let results = await projectConnection.deleteRowFromProjectTable(`${req.params.id}`);
-        return res.json({message:`Project is deleted from database`});;
+        logger.info('Project is deleted from database')
+        return res.status(200).json({message:`Project is deleted from database`}).end();;
     }
     catch(err) {
-        console.error(err)
+        logger.error(JSON.stringify(err))
         next(new Error(`Internal server error, can't delete data from project table`))
     }
 })
@@ -75,15 +80,17 @@ routes.put('/update/:id', [
 ,async (req,res,next) => {  
     const errors = validationResult(req)
          if (!errors.isEmpty()) {
+            logger.info(JSON.stringify(errors))
             return res.status(422).json({ errors: errors.array() })
          }  
 
     try {
         let results = await projectConnection.updateRowFromTable(`${req.params.id}`,req.body );
-        return res.json({message:'Project is updated to the database'});
+        logger.info('project is updated to the database')
+        return res.status(200).json({message:'Project is updated to the database'}).end();
     }
     catch(err) {
-        console.error(err)
+        logger.error(JSON.stringify(err))
         next(new Error(`Internal server error, can't update values in project table`))
     }
 })
