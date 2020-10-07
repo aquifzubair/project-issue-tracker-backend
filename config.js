@@ -6,5 +6,6 @@ module.exports = {
     password: process.env.PASSWORD,
     database: process.env.DATABASE_NAME,
     port: process.env.PORT,
+    secretToken:process.env.SECRET_TOKEN
   };
   
