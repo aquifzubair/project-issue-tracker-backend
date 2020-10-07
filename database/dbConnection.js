@@ -87,7 +87,9 @@ const  createDatabaseAndTable = async () => {
     throw err;
   }
 
+
   try{
+    await queryPromise(databaseQuery.createUserTable)
     await queryPromise(databaseQuery.createProjectTable)
     await queryPromise(databaseQuery.createIssueTable)
     await queryPromise(databaseQuery.createCommentTable)

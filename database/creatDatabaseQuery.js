@@ -4,6 +4,15 @@ const createDb = `CREATE DATABASE IF NOT EXISTS ${database};`;
 
 const useDatabase = `USE ${database};`;
 
+const createUserTable = `CREATE TABLE IF NOT EXISTS users (
+    user_id VARCHAR(36) PRIMARY KEY,
+    user_name VARCHAR(100),
+    user_userName = VARCHAR(100) UNIQUE,
+    user_email VARCHAR(100) UNIQUE,
+    user_password TEXT,
+    status BOOLEAN DEFAULT FALSE
+    );`
+
 
 const createProjectTable = `CREATE TABLE IF NOT EXISTS projects (
     project_id VARCHAR(36) PRIMARY KEY,
@@ -11,9 +20,8 @@ const createProjectTable = `CREATE TABLE IF NOT EXISTS projects (
     created_by VARCHAR(100),
     created_on DATE,
     expected_completion_time DATE,
-    description text
+    description TEXT
     );`
-
 
 
 const createIssueTable = `CREATE TABLE IF NOT EXISTS issues (
@@ -44,6 +52,7 @@ const createCommentTable = `CREATE TABLE IF NOT EXISTS comments (
 module.exports = {
     createDb,
     useDatabase,
+    createUserTable,
     createProjectTable,
     createIssueTable,
     createCommentTable
