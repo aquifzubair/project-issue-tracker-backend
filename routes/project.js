@@ -1,9 +1,13 @@
 const {Router, json} = require('express');
 const projectConnection =require('../database/project');
+const { v4: uuidv4 } = require('uuid');
 
 const { check, validationResult } = require('express-validator');
 const routes = new Router();
 const logger = require('../logger');
+const Project = require('../Modals').Project;
+
+const auth = require('../middleware/auth')
 
 const validateEmpty = (name) => check(`${name}`).isLength({ min: 1 }).withMessage(`${name} Can't be empty`);
 
@@ -31,29 +35,23 @@ routes.get('/', async (req,res,next) => {
     }
 });
 
-routes.post('/insert', [
-    validateEmpty('project_name'),
-    validateEmpty('created_by'),
-    validateEmpty('description'),
-    validateEmpty('created_on'),
-    validateEmpty('expected_completion_time'),
-    validateDate('created_on'),
-    validateDate('expected_completion_time')    
-    
-] , async (req,res,next) =>{
+routes.post('/insert',  async (req,res,next) =>{
 
-    const errors = validationResult(req)
-         if (!errors.isEmpty()) {
-             logger.info(JSON.stringify(errors))
-            return res.status(422).json({ errors: errors.array() })
-         }
          
     try {
-        await projectConnection.insertIntoProjects(req.body);
+        await Project.create({project_id:uuidv4(),...req.body});
         logger.info('Project is added to the database')
         return res.status(200).json({message:'Project is added to the database'}).end();
     }
     catch(err) {
+        if(err.errors && err.errors[0].type === 'Validation error'){
+            res.status(422).json({msg:`${err.errors[0].path} can't be empty`}).end()
+        }
+
+        else if( err.original.code && err.original.code === 'ER_TRUNCATED_WRONG_VALUE'){
+            res.status(422).json({msg:`${err.original.sqlMessage}`}).end()
+        }
+
         logger.error(JSON.stringify(err))
         next(new Error(`Internal server error, can't insert data into project table`))
     }
