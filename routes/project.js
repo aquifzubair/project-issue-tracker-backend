@@ -9,7 +9,7 @@ const auth = require('../middleware/auth');
 
 
 
-routes.get('/', async (req, res, next) => {
+routes.get('/', auth, async (req, res, next) => {
 
     try {
         let results = await Project.findAll()
@@ -22,7 +22,7 @@ routes.get('/', async (req, res, next) => {
     }
 });
 
-routes.post('/insert', async (req, res, next) => {
+routes.post('/insert', auth, async (req, res, next) => {
 
     try {
         await Project.create({ project_id: uuidv4(), ...req.body });
@@ -45,7 +45,7 @@ routes.post('/insert', async (req, res, next) => {
     }
 })
 
-routes.delete('/delete/:id', async (req, res, next) => {
+routes.delete('/delete/:id',auth, async (req, res, next) => {
 
     try {
         await Project.destroy({
@@ -62,12 +62,12 @@ routes.delete('/delete/:id', async (req, res, next) => {
     }
 })
 
-routes.put('/update/:id', async (req, res, next) => {
+routes.put('/update/:id', auth, async (req, res, next) => {
 
     try {
         await Project.update(
             { ...req.body },
-            { where: { project_id: req.params.id } }
+            { where: { project_id: req.params.id} }
         )
         logger.info('project is updated to the database')
         return res.status(200).json({ message: 'Project is updated to the database' }).end();

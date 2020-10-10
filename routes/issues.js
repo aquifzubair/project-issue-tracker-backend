@@ -4,8 +4,9 @@ const { v4: uuidv4 } = require('uuid');
 const routes = new Router();
 const logger = require('../logger');
 const Issue = require('../Modals').Issue;
+const auth = require('../middleware/auth');
 
-routes.get('/', async (req, res, next) => {
+routes.get('/', auth, async (req, res, next) => {
     
     try {
         let results = await Issue.findAll();
@@ -18,7 +19,7 @@ routes.get('/', async (req, res, next) => {
     }
 });
 
-routes.get('/:project_id', async (req, res, next) => {
+routes.get('/:project_id', auth, async (req, res, next) => {
     try {
         let results = await Issue.findAll({
             where:{
@@ -34,7 +35,7 @@ routes.get('/:project_id', async (req, res, next) => {
     }
 });
 
-routes.post('/insert',  async (req, res, next) => {
+routes.post('/insert', auth,  async (req, res, next) => {
 
     try {
         await Issue.create({issue_id:uuidv4(), ...req.body})
@@ -55,7 +56,7 @@ routes.post('/insert',  async (req, res, next) => {
 
 })
 
-routes.delete('/delete/:id', async (req, res, next) => {
+routes.delete('/delete/:id', auth, async (req, res, next) => {
     try {
         await Issue.destroy({
             where: {
@@ -72,7 +73,7 @@ routes.delete('/delete/:id', async (req, res, next) => {
     }
 })
 
-routes.put('/update/:id', async (req, res, next) => {
+routes.put('/update/:id', auth, async (req, res, next) => {
 
     try {
         await Issue.update(
@@ -95,7 +96,7 @@ routes.put('/update/:id', async (req, res, next) => {
     
 })
 
-routes.put('/status/:id',  async (req, res, next) => {
+routes.put('/status/:id', auth,  async (req, res, next) => {
 
     try {
         await Issue.update(
